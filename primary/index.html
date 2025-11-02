@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Start</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1 v-html="getMsg()"></h1>
+        <h1>Lucky No {{luckyno}}</h1>
+        <h1 v-once>Only Once : Lucky No {{luckyno}}</h1>
+        <a v-bind:href="nw">Click Me</a>
+        <!-- <a href="{{nw}}">Click Me</a> we can't use variables inside html attributes so we use bind--> 
+        <p>Lucky No is an {{luckyno%2==0?"even":"odd"}}</p>
+        <p>Generating an Random Number 1-10: {{getRandomNumber()}}</p>
+        <p>MarksList {{markslist}}</p>
+        <p>Object: {{obj}}</p>
+        <p>{{obj.name}} is a boy have {{obj.age}} year and status is {{obj.status}}</p>
+        <p v-show="obj.age">Display(show):{{obj.status}}</p> <!-- this element will only been visible if obj.age will be true else not-->
+        <p v-if="obj.age">Display(if):{{obj.status}}</p> <!-- this element will only been visible if obj.age will be true else not-->
+        <p v-else-if="obj.status=='active' && obj.age==false">Both Condition Satisfied</p>
+        <p v-else>Customer Doesn't have corporate card.</p>
+        <span v-for="(n,index) in newArray">New Array element: {{n}} with index {{index+1}}</br></span>
+        <p v-for="(project,index) in obj.projects">{{index+1}} Project:{{project.name}} timeline: {{project.timeline}}</p>
+    </div>
+</body>
+<script>
+    const {createApp,ref} = Vue;
+    createApp({
+        setup(){
+            const nw = "https://google.com"
+            function getMsg(){
+                return `<span>hii there</span>`
+            }
+            let luckyno = ref(6)
+            const newArray = [10,20,30,40]
+            let cnt=0;
+            const markslist = [10,20,30,40]
+            const obj = {
+                name:"raj",
+                age:false,
+                status:"active",
+                projects :[
+                    {name:"proj1",timeline:"December",cost:"$3"},
+                    {name:"proj2",timeline:"March",cost:"$31"},
+                    {name:"proj3",timeline:"Febrauary",cost:"$12"},
+                ]
+            }
+            function getRandomNumber(){
+                // luckyno.value = Math.floor(Math.random()*10)+1
+                // console.log("luck",luckyno.value);
+                // return luckyno
+                cnt++;
+                setTimeout(()=>{
+                    luckyno.value=77;
+                },2000)
+                console.log(luckyno.value,cnt);
+                
+            }
+            return {
+                // msg:"Hello From Vue",
+                nw,getMsg,luckyno,markslist,newArray,obj,getRandomNumber
+            }
+        }
+    }).mount("#app");
+</script>
+</html>
