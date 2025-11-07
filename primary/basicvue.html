@@ -22,14 +22,16 @@
         <p v-if="obj.age">Display(if):{{obj.status}}</p> <!-- this element will only been visible if obj.age will be true else not-->
         <p v-else-if="obj.status=='active' && obj.age==false">Both Condition Satisfied</p>
         <p v-else>Customer Doesn't have corporate card.</p>
-        <span v-for="(n,index) in newArray">New Array element: {{n}} with index {{index+1}}</br></span>
-        <p v-for="(project,index) in obj.projects">{{index+1}} Project:{{project.name}} timeline: {{project.timeline}}</p>
+        <span v-for="(n,index) in newArray"><span v-once>New Array element: {{n}} with index {{index+1}}</span></br></span>
+        <p v-for="(value,key) in obj.projects" :key="value.timeline">{{key}} Project:{{value.name}} timeline: {{value.timeline}} <input type="text"/></p>
+        {{shufflePorject()}}
     </div>
 </body>
 <script>
-    const {createApp,ref} = Vue;
+    const {createApp,ref,reactive} = Vue;
     createApp({
         setup(){
+
             const nw = "https://google.com"
             function getMsg(){
                 return `<span>hii there</span>`
@@ -38,7 +40,7 @@
             const newArray = [10,20,30,40]
             let cnt=0;
             const markslist = [10,20,30,40]
-            const obj = {
+            const obj = reactive({
                 name:"raj",
                 age:false,
                 status:"active",
@@ -47,6 +49,12 @@
                     {name:"proj2",timeline:"March",cost:"$31"},
                     {name:"proj3",timeline:"Febrauary",cost:"$12"},
                 ]
+            })
+            let p =0;
+            function shufflePorject(){
+                setTimeout(()=>{
+                obj.projects.sort(()=>Math.random()-0.5)
+                },3000);
             }
             function getRandomNumber(){
                 // luckyno.value = Math.floor(Math.random()*10)+1
@@ -61,7 +69,7 @@
             }
             return {
                 // msg:"Hello From Vue",
-                nw,getMsg,luckyno,markslist,newArray,obj,getRandomNumber
+                nw,shufflePorject,getMsg,luckyno,markslist,newArray,obj,getRandomNumber,
             }
         }
     }).mount("#app");
