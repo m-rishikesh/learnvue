@@ -11,54 +11,114 @@
 
 </head>
 <body>
-        <div id="app" class="container">
-            <div class="bg-info p-5 rounded m-5">
-                <form action="#" v-on:submit.prevent="submitForm">
-                <div class="h2 text-center"> Forms</div>
-                <hr/>
-                <div class="input-group mb-3">
-                <span class="input-group-text">Email:</span>
-                <input type="text" class="from-control" v-model="formObj.email">
+    <div id="app" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="h2">Registration Form</h2>
+                    </div>
+                    <div class="card-body p-4">
+                        <form v-on:submit.prevent="handleSubmit">
+                            <ul>
+                                <li v-for="error in errorList">{{error}}</li>
+                            </li>
+                            </ul>
+                            <div class="form-floating mt-3">
+                                <input type="email" class="form-control" id="email" placeholder="name@example.com" v-model.trim="formObj.email">
+                                <label for="email">Email address</label>
+                            </div>
+
+                            <div class="form-floating mt-3">
+                                <input type="text" class="form-control" id="name" placeholder="Your Name" v-model.trim="formObj.name">
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="form-floating mt-3">
+                                <input type="number" class="form-control" id="phone" placeholder="Phone Number" v-model="formObj.phone">
+                                <label for="phone">Phone</label>
+                            </div>
+                            <!-- <div class="form-floating mt-3">
+                                <select class="form-select" id="gender" v-model="formObj.gender">
+                                    <option disabled value="">Please select one</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                                <label for="gender">Gender</label>
+                            </div> -->
+                            <div class="border p-1">
+                                <label class="form-label">Gender</label></br>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" v-model="formObj.gender" value="male" name="InlineRadioVal">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" v-model="formObj.gender" value="female" name="InlineRadioVal">Female</label>
+                                </div>
+                                <br/>
+                                <hr/>
+                                <!-- Gender using select -->
+                                  <div class="form-check form-check-inline">
+                                    <select class="form-select" v-model="formObj.gender" id="gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        </select>
+                                  </div>
+                            </div>
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="subscribe" v-model="formObj.subscribe">
+                                <label class="form-check-label" for="subscribe">
+                                    Subscribe to newsletter
+                                </label>
+                            </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-secondary" @click="">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="input-group mb-3">
-                <span class="input-group-text">Name:</span>
-                <input type="text" class="from-control" v-model="formObj.name">
-                </div>
-                <div class="input-group mb-3">
-                <span class="input-group-text">Phone:</span>
-                <input type="text" class="from-control" v-model="formObj.phone">
-                </div>
-                <div class="input-group mb-3">
-                <span class="input-group-text">Gender:</span>
-                <input type="text" class="from-control" v-model="formObj.gender">
-                </div>
-                <div class="input-group mb-3">
-                <input type="checkbox" class="from-check-input" v-model="formObj.subscribe">
-                <label class="form-check-label">&nbsp; Subscribe to newsletter</label>
-                </div>
-                <div class="text-center pb-3">
-                <button class="btn btn-primary m-2 w-25" >Submit</button>
-                </div>
-                </form>
             </div>
+        </div>
     </div>
 </body>
 <script>
-    const {createApp,reactive} = Vue
+    const { createApp, reactive, ref } = Vue
     createApp({
-        setup(){
-            const formObj = reactive({
+        setup() {
+            const getInitialFormState = () => ({
                 email:"",
                 name:"",
                 phone:"",
-                subscribe:false,
-                gender:"",
+                subscribe: false,
+                gender: "",
+                validName:false,
             });
 
+            const errorList = reactive([]);
+
+            const formObj = reactive(getInitialFormState());
+            const handleSubmit = () =>{
+                errorList.length = 0;
+                if(formObj.name.length < 3) errorList.push("Name should be atleast 3 characters long");
+                if(formObj.email === "") errorList.push("Email Required");
+                if(!formObj.subscribe) errorList.push("Please Subscribe to the Newsletter");
+                else{
+                    console.log(formObj);
+                    alert("form submitted");
+                }
+            }
+            const validateInput = () =>{
+                if(formObj.name.length < 3){
+                    formObj.validName = true;
+                }else{
+                    formObj.validName = false;
+                }
+            }
             return{
-                formObj
+                formObj,handleSubmit,validateInput,errorList
             }
         }
-    })
+    }).mount("#app")
 </script>
 </html>
