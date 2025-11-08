@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Way Data Binding</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Name:
+        <input type="text" v-model="name">
+        <br/>
+        Age:
+        <input type="text" v-model="age">
+        <p>{{name}} is a boy of {{age}} years old.</p>
+        <br/><br/> -->
+        <!-- Model Modifiers means on v-model we are adding extra functionalities -->
+        <!-- If u run above and below code side by side you wont see the data modifiers functionalites as intended. -->
+         Name:
+        <input type="text" v-model.lazy="name">
+        <br/>
+        Age:
+        <input type="text" v-model.trim="age">
+        <p>{{name}} is a boy of {{age}} years old.</p>
+
+        <!-- Computed Property ==>it’s a value that depends on other reactive data, and Vue automatically caches and re-evaluates it only when its dependencies change. -->
+        <!-- without computed property -->
+        <p>Count: {{cnt}}</p>
+        <p>{{getName()}}</p>
+        <button v-on:click="cnt++">Increment</button> 
+        <button v-on:click="cnt--">Decrement</button>
+        <br/><br/>
+        <!-- with computed property -->
+         <p>Count: {{cnt}}</p>
+        <p>{{getNameComputed}}</p> <!--getNameComputed is a property not a function-->
+        <button v-on:click="cnt++">Increment</button> <!-- here cnt++ automatically get converted to cnt.value++-->
+        <button v-on:click="cnt--">Decrement</button>
+        FullName:
+        <input type="text" v-model="fname">
+    </div>
+</body>
+<script>
+    const {createApp,ref,computed,watch} = Vue;
+    createApp({
+        setup(){
+            const name = ref("Ben");
+            const age = ref(10);
+            const fname = ref("rishikesh");
+            const lname = ref("raj");
+            const cnt = ref(0);
+
+            const getName = () =>{
+                console.log("getName called");
+                return fname.value + " " + lname.value
+            }
+
+            watch(()=>cnt.value,(newValue,oldValue)=>{
+                    console.log("Counter value changed from ",oldValue," to ",newValue);
+                    if (newValue == 5) alert("5 is the cnt");
+                }
+            )
+
+            const getNameComputed = computed ((previous) =>{
+                console.log("getName called");
+                console.log("previous:",previous);
+                return fname.value + " " + lname.value
+            })
+            return {
+                name,age,fname,lname,getName,cnt,getNameComputed
+            }
+        }
+    }).mount("#app")
+</script>
+</html>

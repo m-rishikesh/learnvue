@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoviePedia - ||| One Stop Solution |||</title>
+    <!-- Adding Bootstrap CDN as Styling dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Adding Vue Dependencies -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="bg-info p-5 rounded m-5">
+            <div class="h2 text-center"> MoviePedia - ||| One Stop Solution |||</div>
+            <hr/>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Title:</span>
+                <input type="text" class="from-control" v-model="newMovie.title">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Year:</span>
+                <input type="text" class="from-control" v-model="newMovie.year">
+            </div>
+            <div class="text-center pb-3">
+                <button class="btn btn-primary m-2 w-25" @click="AddFunction()">Add</button>
+                <button class="btn btn-secondary m-2 w-25" v-on:click="removeFunction()">Remove</button>
+            </div>
+            <div class="border p-3 w-50 mx-auto">
+                <div class="text-center">
+                    <h4 class="text-center">Movie List</h4>
+                    <!-- replace the span v-if condition with "watch" property -->
+                    <!-- <span v-if="movies.length>=3" class="text-danger">You can only Add 3 Movies</span> -->
+                    <span v-if="showMessage" class="text-danger">You can only Add 3 Movies</span>
+
+                    <hr/>
+                </div>
+                <ul class="list-group">
+                    <!-- <li v-for="movie in movies" class="list-group-item">Movie: {{movie.title}}, Year: {{movie.year}}</li> -->
+                    <li v-for="movie in getAllMovieText" class="list-group-item">{{movie}}</li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    const {createApp,reactive,ref,computed,watch} = Vue;
+    createApp({
+        setup(){
+            let movies = reactive([
+                {title:"Movie1",year:2004},
+                {title:"Movie2",year:2005},
+                {title:"Movie3",year:2006},
+            ]);
+
+            const newMovie = reactive({title:"",year:""});
+            const AddFunction = () =>{
+                if (newMovie.title == "" || newMovie.year == "") alert("Title or Year is Missing")
+                else{
+                    if(movies.includes(newMovie)) alert("Movie Already Exists!");
+                    else movies.push({title:newMovie.title,year:newMovie.year})
+                }
+            }
+            const removeFunction = () =>{
+                movies.pop()
+            }
+            const showMessage = ref(false)
+            
+            // const getAllMovieText = () =>{
+            //     return movies.map((movieObject)=>{
+            //         return `${movieObject.title} was released in ${movieObject.year}`
+            //     })
+            // }
+
+            // replace this getAllMovieText with "compute" 
+
+            const getAllMovieText = computed(()=>{
+                return movies.map((movieObject)=>{
+                    return `${movieObject.title} was released in ${movieObject.year}`
+                })
+            })
+            watch(()=>movies.length,async (length)=>{setTimeout(()=>{(length>=3) ? showMessage.value=true:showMessage.value=false},3000)})
+            return {
+                newMovie,movies,AddFunction,removeFunction,getAllMovieText,showMessage
+            }
+        }
+    }).mount("#app")
+</script>
+</html>

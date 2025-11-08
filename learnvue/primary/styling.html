@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled HTML</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p v-html="hello" style="background-color: red;font-size:larger"></p>
+        <p v-html="hello" v-bind:style="{backgroundColor: 'green',fontSize:'larger'}"></p>
+        <p v-html="hello" v-bind:style="{'background-color': 'pink','font-size':'larger'}"></p>
+        <!-- the above are the ways to do inline styling with/without vue -->
+         <!-- you are thinking of why we are using v-bind when we are doing the same thing without vue also, this is because we can use dynamic states/variables as the value which provides the dynamic behaviour see the below line for better understanding. -->
+        <p v-html="hello" v-bind:style="{backgroundColor: 'red',fontSize:fontSizeTemp + 'px' }"></p>
+        <!-- now we are using css class to give style to the element and also use the binding also -->
+        <p v-html="hello" class="padded-text" v-bind:class="{h1:true,h2:true, 'padded-text':false}"></p>
+        <!-- Now instead of directly writing h1:true we can write a function that if the result of that returns true then h1 will be true else not -->
+        <p v-html="hello" class="padded-text" v-bind:class="{h1:showH1(),h2:showH2(), 'padded-text':false}"></p>
+        <!-- we can also pass a object directly to the v-bind:class -->
+        <p v-html="hello" class="padded-text" v-bind:class="showH1()?showData:'' "></p>
+        <!-- if we have nested objects contains the styles then -->
+        <p v-html="hello" class="padded-text" v-bind:style="someStyle.style1"></p>
+        <!-- Now if we have render one style always even if others style on that element doesn't get applied then we can do so also -->
+        <p v-html="hello" class="padded-text" v-bind:class="[showH1()?showData:'',bordersClass ]"></p>
+        <!-- instead of using v-bind:attribute we can simply use :attribute  -->
+
+
+
+    </div>
+</body>
+<script>
+    const {createApp} = Vue;
+    createApp({
+        setup() {
+            const someStyle = {
+                style1:{
+                    backgroundColor:'red',
+                    color:'white',
+                },
+            }
+            function showH1(){
+                return false;
+            }
+            function showH2(){
+                return true;
+            }
+            const bordersClass = {borders:true};
+            const hello = "<h1>Hello World!</h1>"
+            const fontSizeTemp = 50
+            const showData = {h1:true,h2:true, 'padded-text':false}
+            return{
+                hello,fontSizeTemp,showH1,showH2,showData,someStyle,bordersClass
+            }
+        }
+    }).mount("#app")
+</script>
+<style>
+    .h1{
+        background-color: black;
+    }
+    .h2{
+        color: red;
+    }
+    .padded-text{
+        padding-left: 10px;
+    }
+    .borders{
+        border: 10px solid greenyellow;
+    }
+</style>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <div id="app">
+        <!-- EVENT MODIFIERS -->
+        <button v-on:click="clickme">Click Me</button>
+        <button v-on:click="clickmee('With Parameters')">Click Me With Parameters</button>
+        <button v-on:click="clickmeee('With Parameters',$event)">Click Me With event parameters</button>
+        <p>x: {{x}} y: {{y}}</p>
+        <div v-on:click="clickmee('With Parameters on DIV',$event)">
+            <span>Hello World!</span>
+            <button v-on:click="clickmee('With Parameters on BUTTON',$event)">Click Me with alert msg</button>
+        </div>
+        <!-- the above and below are the same code the problem with the above code is event bubbling, if we click on inner element the inner event trigger and also the outer one also gets triggered so to stop that we use .stop attribute which we have done in the below code. -->
+        <div v-on:click.once="clickmee('With Parameters on DIV',$event)">
+            <span>Hello World!</span>
+            <button v-on:click.stop="clickmee('With Parameters on BUTTON',$event)">Click Me with alert msg</button>
+        </div>
+        <!-- if we have a link but we want to trigger and event instead of opening the link we can prevent that behaviour this you can use in form submission instead of directly sending it to the server we send through api so we prevent the btn click. -->
+        <a href="https://google.com" v-on:click="clickmee('With Parameters on LINK')">Google follows link with event trigger</a></br>
+        <!-- the above GOOGLE link goes to google.com the below one trigger an event on click -->
+        <a href="https://google.com" v-on:click.prevent="clickmee('With Parameters on LINK')">Google triggers event</a>
+        
+        <br/>
+        <!-- KEY MODIFIERS -->
+            <!-- Key Modifiers means handling the key events -->
+        <input type="text" v-on:keyup="sayHii()"/>
+        <input type="text" v-on:keyup.enter="sayHii()" />
+        <input type="text" v-on:keyup.enter.ctrl="sayHii()" />
+
+    </div>
+</body>
+<script>
+    const {createApp,ref} = Vue;
+    createApp({
+        setup() {
+            function sayHii(){
+                alert("Say HII called")
+            }
+            let x = ref(0);
+            let y = ref(0);
+            const clickme = () =>{
+                alert("Button Clicked!");
+            }
+            const clickmee = (msg) =>{
+                alert(msg)
+            }
+            const clickmeee = (msg,event) =>{
+                x.value = event.x;
+                y.value = event.y;
+            }
+            return {
+                clickme,clickmee,clickmeee,x,y,sayHii
+            }
+        }
+    }).mount("#app")
+</script>
+</html>
